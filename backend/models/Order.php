@@ -168,6 +168,10 @@ public $name = 'Здоров Групп КЗ'; //переменная для з�
     public function getItemsOrder(){
         return $this->hasMany(OrderItems::className(), ['order_id' => 'order_id']);
     }
+    
+    public function getOrderDeliveryData(){
+        return $this->hasOne(OrderDeliveryData::className(), ['order_id' => 'order_id']);
+    }
 //
 //    public function getOrderInfo(){
 //        return $this->hasMany(OrderItemsOffer::className(), ['order_items_id' => 'order_items_id'])

@@ -43,9 +43,15 @@ class OrderSearch extends Order
      */
     public function search($params)
     {
-        $query = Order::find()->andWhere(['order_countryIso' => ("KZ")])
-            ->andWhere(['order_status' => ("send")]);
 
+        $query = Order::find()->joinWith(['orderDeliveryData' => function($query){
+            $query->andWhere([ 'order_delivery_data_courierId' => '51' ]);
+        }])->andWhere(['order_status' => "send"]);
+
+//        $query = Order::find()->andWhere(['orderDeliveryData.order_delivery_data_courierId' => ("51")])
+//            ->andWhere(['order_status' => ("send")]);
+
+       // $query->joinWith('orderDeliveryData');
         $query->joinWith('address');
 //        $query->joinWith('items');
 
