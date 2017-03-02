@@ -16,6 +16,8 @@ AppAsset::register($this);
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>">
 <head>
+    <input type="hidden" name="_csrf" value="<?=Yii::$app->request->getCsrfToken()?>" />
+    <?= Html::csrfMetaTags() ?>
     <meta charset="<?= Yii::$app->charset ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?= Html::csrfMetaTags() ?>
@@ -28,7 +30,7 @@ AppAsset::register($this);
 <div class="wrap">
     <?php
     NavBar::begin([
-        'brandLabel' => 'KZ',
+        'brandLabel' => 'Доставляемость',
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'class' => 'navbar-inverse navbar-fixed-top',
@@ -37,18 +39,18 @@ AppAsset::register($this);
     $menuItems = [
         ['label' => 'Home', 'url' => ['/order/index']],
     ];
-//    if (Yii::$app->user->isGuest) {
-//        $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
-//    } else {
-//        $menuItems[] = '<li>'
-//            . Html::beginForm(['/site/logout'], 'post')
-//            . Html::submitButton(
-//                'Logout (' . Yii::$app->user->identity->username . ')',
-//                ['class' => 'btn btn-link logout']
-//            )
-//            . Html::endForm()
-//            . '</li>';
-//    }
+    if (Yii::$app->user->isGuest) {
+        $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
+    } else {
+        $menuItems[] = '<li>'
+            . Html::beginForm(['/site/logout'], 'post')
+            . Html::submitButton(
+                'Logout (' . Yii::$app->user->identity->username . ')',
+                ['class' => 'btn btn-link logout']
+            )
+            . Html::endForm()
+            . '</li>';
+    }
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => $menuItems,

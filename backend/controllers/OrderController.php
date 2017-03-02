@@ -8,18 +8,38 @@ use backend\models\OrderSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\data\ArrayDataProvider;
+use backend\views;
+use yii\filters\AccessControl;
 
 /**
  * OrderController implements the CRUD actions for Order model.
  */
 class OrderController extends Controller
 {
+    public $enableCsrfValidation = false;
     /**
      * @inheritdoc
      */
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+//                'only' => ['create', 'update', 'delete'],
+                'rules' => [
+                    [
+                        'actions' => ['login', 'error'],
+                        'allow' => true,
+                    ],
+                    [
+//                        'actions' => ['logout', 'index'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -27,23 +47,66 @@ class OrderController extends Controller
                 ],
             ],
         ];
+//        return [
+//            'access' => [
+//                'class' => AccessControl::className(),
+//                'only' => ['create', 'update', 'delete', 'logout', 'index', 'error'],
+//                'rules' => [
+//                    [
+//                        'actions' => ['login', 'error'],
+//                        'allow' => true,
+//                        'roles' => ['?'],
+//                    ],
+//                    [
+//                        'actions' => ['logout', 'index', 'create', 'update', 'delete'],
+//                        'allow' => true,
+//                        'roles' => ['@'],
+//                    ],
+//                ],
+//            ],
+//
+//            'verbs' => [
+//                'class' => VerbFilter::className(),
+//                'actions' => [
+//                    'delete' => ['POST'],
+//                ],
+//            ],
+//        ];
     }
 
     /**
      * Lists all Order models.
      * @return mixed
      */
+
     public function actionIndex()
     {
-        $searchModel = new OrderSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $data = null;
+        if(isset($_GET['one_week_ago'])) {
+            $data = order::getCheck();
+        }
+        if(isset($_GET['two_week_ago'])) {
+            $data = order::getCheckTwoWeeks();
+        }
+        if(isset($_GET['three_week_ago'])) {
+            $data = order::getCheckThreeWeeks();
+        }
+        if(isset($_GET['four_week_ago'])) {
+            $data = order::getCheckFourWeeks();
+        }
+        
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+        $dataProvider = new ArrayDataProvider([
+            'allModels' => $data,
+            'sort' => [
+            ],
+            'pagination' => [
+                'pageSize' => 50,
+            ],
         ]);
-    }
 
+        return $this->render('index',['dataProvider' =>$dataProvider]);
+    }
     /**
      * Displays a single Order model.
      * @param integer $id
@@ -113,6 +176,7 @@ class OrderController extends Controller
      * @return Order the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
+    
     protected function findModel($id)
     {
         if (($model = Order::findOne($id)) !== null) {
@@ -121,4 +185,6 @@ class OrderController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+    
+    
 }

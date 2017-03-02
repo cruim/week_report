@@ -12,7 +12,7 @@ use backend\models\Order;
  */
 class OrderSearch extends Order
 {
-   public $address;
+ 
     /**
      * @inheritdoc
      */
@@ -41,18 +41,28 @@ class OrderSearch extends Order
      *
      * @return ActiveDataProvider
      */
+
+    /*$query->andWhere(['order_delivery_data_courierId' => '51']);
+    }])->joinWith(['address' => function($query){
+        $query->orWhere(['NOT', ['order_delivery_address_city' => 'Актау']]);
+    //            $query->orWhere([ 'order_delivery_address_city' => 'Астана']);
+    //            $query->orWhere([ 'order_delivery_address_city' => 'Актобе']);
+    //            $query->orWhere([ 'order_delivery_address_city' => 'Атырау']);
+
+    }])->andWhere(['order_status'  => "send"]);*/
+    /**
+     * @param array $params
+     * @return ActiveDataProvider
+     */
     public function search($params)
     {
+        
 
-        $query = Order::find()->joinWith(['orderDeliveryData' => function($query){
-            $query->andWhere([ 'order_delivery_data_courierId' => '51' ]);
-        }])->andWhere(['order_status' => "send"]);
 
-//        $query = Order::find()->andWhere(['orderDeliveryData.order_delivery_data_courierId' => ("51")])
-//            ->andWhere(['order_status' => ("send")]);
-
-       // $query->joinWith('orderDeliveryData');
-        $query->joinWith('address');
+        $query = Order::find();
+            
+            
+//        $query->joinWith('address');
 //        $query->joinWith('items');
 
         // add conditions that should always apply here
@@ -69,7 +79,7 @@ class OrderSearch extends Order
             return $dataProvider;
         }
 
-        $query->joinWith('address');
+//        $query->joinWith('address');
 //        $query->joinWith('items');
 
         // grid filtering conditions
